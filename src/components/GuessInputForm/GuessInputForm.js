@@ -1,24 +1,22 @@
 import React from 'react';
 
-// text input should be controlled by react state
-// when the form is submitted:
-//    - the entered value should be logged to the console
-//    - the input should be reset to an empty string
-// the user input should be converted to UPPERCASE
-// the user input should have a minimum and maximum length of 5
-function GuessInputForm() {
+function GuessInputForm({ handleGuessAdd, isDisabled }) {
   const [userGuess, setUserGuess] = React.useState('');
 
   function handleNewGuess(event) {
     event.preventDefault();
-    console.log({ userGuess });
+    handleGuessAdd(userGuess);
+    // console.log({ userGuess });
     setUserGuess('');
   }
+
+  // console.log(isDisabled);
 
   return (
     <form className="guess-input-wrapper" onSubmit={handleNewGuess}>
       <label htmlFor="guess-input">Enter guess:</label>
       <input
+        disabled={isDisabled}
         required
         id="guess-input"
         type="text"
