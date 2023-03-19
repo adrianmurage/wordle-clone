@@ -230,3 +230,22 @@ h1 {
     transform: translateY(0%);
   }
 }
+
+/* styles for the reset button */
+
+.reset-button {
+  background-color: white;
+  border-radius: 5px;
+  color: var(--color-success);
+  padding: 12px;
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+.sad.reset-button {
+  color: var(--color-error);
+}
+
+.happy.reset-button {
+  color: var(--color-success);
+}
