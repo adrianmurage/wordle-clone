@@ -1,29 +1,26 @@
 import React from 'react';
 
-function GuessInputForm({ handleGuessAdd, isDisabled }) {
-  const [userGuess, setUserGuess] = React.useState('');
+function GuessInputForm({ handleGuessAdd, gameStatus }) {
+  const [tentativeGuess, setTentativeGuess] = React.useState('');
 
   function handleNewGuess(event) {
     event.preventDefault();
-    handleGuessAdd(userGuess);
-    // console.log({ userGuess });
-    setUserGuess('');
+    handleGuessAdd(tentativeGuess);
+    setTentativeGuess('');
   }
-
-  // console.log(isDisabled);
 
   return (
     <form className="guess-input-wrapper" onSubmit={handleNewGuess}>
       <label htmlFor="guess-input">Enter guess:</label>
       <input
-        disabled={isDisabled}
+        disabled={gameStatus === 'running' ? false : true}
         required
         id="guess-input"
         type="text"
-        value={userGuess}
+        value={tentativeGuess}
         onChange={(event) => {
-          const nextUserGuess = event.target.value.toUpperCase();
-          setUserGuess(nextUserGuess);
+          const nextTentativeGuess = event.target.value.toUpperCase();
+          setTentativeGuess(nextTentativeGuess);
         }}
         pattern="\w{5,5}"
         title="The word must be a 5 letter word"

@@ -4,7 +4,9 @@ import { sample } from '../../utils';
 import { WORDS } from '../../data';
 import GuessInputForm from '../GuessInputForm/';
 import GuessResults from '../GuessResults/GuessResults';
-import { checkGuess } from '../../game-helpers';
+import WonBanner from '../WonBanner/WonBanner';
+import LostBanner from '../LostBanner/LostBanner';
+import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -12,58 +14,31 @@ const answer = sample(WORDS);
 console.info({ answer });
 
 function Game() {
-  const [guessList, setGuessList] = React.useState([
-    // { id: 'b190ad87-0bdf-4012-a78c-2364746519ed', userGuess: 'ADRIA' },
-  ]);
+  const [guessList, setGuessList] = React.useState([]);
 
-  const numberOfGuesses = guessList.length;
-  let lastGuess = undefined;
-  if (numberOfGuesses > 0) {
-    lastGuess = guessList[numberOfGuesses - 1].userGuess;
-    console.log(lastGuess);
-  }
+  // running | won | lost
+  const [gameStatus, setGameStatus] = React.useState('running');
 
-  function handleGuessAdd(userGuess) {
-    const guessResults = checkGuess(userGuess, answer);
-    const nextGuess = [
-      ...guessList,
-      { id: crypto.randomUUID(), userGuess, guessResults },
-    ];
+  function handleGuessAdd(tentativeGuess) {
+    const nextGuess = [...guessList, tentativeGuess];
     setGuessList(nextGuess);
-  }
 
-  function handleWin(userGuess, numOfGuesses) {
-    if (userGuess === null) {
-      return;
-    }
-    return userGuess === answer ? (
-      <div className="happy banner">
-        <p>
-          <strong>Congratulations!</strong> Got it in {` `}
-          <strong>{numOfGuesses} guesses</strong>.
-        </p>
-      </div>
-    ) : undefined;
-  }
-
-  function handleLoose(numberOfGuesses) {
-    if (numberOfGuesses >= 6) {
-      return (
-        <div className="sad banner">
-          <p>
-            Sorry, the correct answer is <strong>LEARN</strong>.
-          </p>
-        </div>
-      );
+    if (nextGuess.length >= NUM_OF_GUESSES_ALLOWED) {
+      setGameStatus('lost');
+    } else if (tentativeGuess === answer) {
+      setGameStatus('won');
     }
   }
 
   return (
     <>
-      <GuessResults guessList={guessList} />
-      <GuessInputForm handleGuessAdd={handleGuessAdd} handleWin={handleWin} />
-      {handleWin(lastGuess, numberOfGuesses)}
-      {handleLoose(numberOfGuesses)}
+      <GuessResults guessList={guessList} answer={answer} />
+      <GuessInputForm handleGuessAdd={handleGuessAdd} gameStatus={gameStatus} />
+      {/* {gameStatus === 'won'? gameStatus: gameStatus} */}
+      {gameStatus === 'won' ? (
+        <WonBanner numberOfGuesses={guessList.length} />
+      ) : undefined}
+      {gameStatus === 'lost' ? <LostBanner answer={answer} /> : undefined}
     </>
   );
 }
