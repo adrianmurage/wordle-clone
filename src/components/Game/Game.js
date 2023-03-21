@@ -22,10 +22,10 @@ function Game() {
     const nextGuess = [...guessList, tentativeGuess];
     setGuessList(nextGuess);
 
-    if (nextGuess.length >= NUM_OF_GUESSES_ALLOWED) {
-      setGameStatus('lost');
-    } else if (tentativeGuess === answer) {
+    if (tentativeGuess === answer) {
       setGameStatus('won');
+    } else if (nextGuess.length >= NUM_OF_GUESSES_ALLOWED) {
+      setGameStatus('lost');
     }
   }
 
